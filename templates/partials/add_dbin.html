@@ -1,0 +1,148 @@
+<form class="row g-3" hx-post="/administration/dbins/add" hx-trigger="submit">
+    <div class="modal fade p-5 " id="staticBackdropAddDbin" data-bs-backdrop="static" data-bs-keyboard="false"
+    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+       
+    <div class="modal-dialog modal-lg" style="text-align: left;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add DustBin</h5>
+                    <button type="button" class="btn-close close_add_driver" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-5">
+
+                            <div class="row">
+                                <div class="col">
+                                    <label for="name">Name:</label>
+                                    <input type="text" class="form-control" placeholder="Name" name="name">
+                                </div>
+
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <label for="name">Identifier:</label>
+                                    <input type="text" class="form-control" placeholder="secrete"
+                                    name="identifier">
+                                </div>
+                            </div>
+                        
+                            <div class="row mt-2">
+                                <div class="col">
+                                   <label for="height">Depth:</label>
+                                   <input type="text" class="form-control" placeholder="Height"
+                                   name="depth">
+                                </div>
+                            </div>
+                        
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <label for="location">Location:</label>
+                                    <input type="text" class="form-control" readonly name="location">
+                                </div>
+                            </div>
+                        
+                            <div class="row mt-4">
+                                <div class="col">
+                                    <label for="office">Office</label><br>
+                                    <select name="office" id="addDbinOffice" 
+                                    style="width: 100px; height: 27px; border-radius: 5px;">
+                                        {% for office in offices%}
+                                            <option value="{{ office['id'] }}"> {{office["area_name"]}} </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        
+                        </div>
+                        
+                        <div class="col-7 p-3">
+                            <div id="add_dbin_map"
+                            style="width: 100%; height: 300px;"></div>
+                        </div>
+
+                    </div>
+                    <div class="row mt-5" style="text-align: right;">
+                        <div class="col" style="text-align: right;">
+                            <button type="button" class="btn btn-secondary close_add_driver"
+                            data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       </div> 
+
+    </div>
+
+</form>
+
+<script>
+    headers = {
+    Authorization: "Bearer " + "{{ api_token }}"
+    }
+    elem = document.querySelector("#staticBackdropAddDbin")
+    var addDriverModel = new bootstrap.Modal(elem)
+    addDriverModel.show();
+    thisDiv = document.querySelector("#staticBackdropAddDbin")
+    var coordinate_field = thisDiv.querySelector("input[name='location']")
+
+    var marker = null
+    var officeMap = null
+    var map = null
+
+    var officeSelectElement = thisDiv.querySelector("#addDbinOffice")
+
+    
+    
+    async function changeMap(e){
+        if (officeMap){
+            officeMap.delete()
+            officeMap = null
+        }
+        else
+            var office_id = e.target.value
+            showMap(e.target.value)
+        }
+
+    async function showMap(office_id){
+        var office_resp = await axios.get(`/api/offices/${office_id}`, {headers:headers})
+        var office = office_resp.data
+        var dbins = await axios.get(`/api/offices/${office.id}/dbins`, {headers:headers})
+        dbins = dbins.data
+        officeMap = new OfficeMap(map, office, dbins)
+        map.setCenter(office.boundry.center)
+
+        officeMap.boundry.addListener("click", e=> {
+            console.log("click")
+            lat = e.latLng.lat()
+            lng = e.latLng.lng()
+            crd = new google.maps.LatLng(lat, lng)
+            officeMap.putDbin({lat: lat, lng: lng})
+            coordinate_field.value = JSON.stringify(crd)
+
+        })
+    }
+        
+    officeSelectElement.addEventListener("change", changeMap)
+
+    async function init(){
+        var element = document.querySelector("#add_dbin_map")
+        map = new google.maps.Map(element, {
+        zoom: 10,
+        mapId: `addOfficeMap3`
+        })
+
+        await showMap(officeSelectElement.value)
+    }
+
+    init()
+
+</script>
+
+
+
+

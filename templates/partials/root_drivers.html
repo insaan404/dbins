@@ -1,0 +1,28 @@
+{% for driver in drivers %}
+     <div class="card mt-1 shadow-sm rounded">
+        <button
+        style="position: absolute; right: 5px; top: 5px; border: none; background-color: white;">
+            <img src="{{url_for('static', filename='images/edit.svg')}}" alt="">
+        </button>
+      <div class="card-body" style="text-align: left;">
+        <h5 class="card-header" style="text-align: center;">{{ driver["fname"] }} {{ driver["lname"] }}</h5>
+        <div>
+            <span>First Name: </span>
+            <span>{{ driver["fname"] }}</span>
+        </div>
+        <div>
+            <span>Last Name: </span>
+            <span>{{ driver["lname"] }}</span>
+        </div>
+        <div>
+            <span>Contact: </span>
+            <span>{{ driver["contact"] }}</span>
+        </div>
+        <div>
+            <span>Address: </span>
+            <span>{{ driver["address"] }}</span>
+        </div>
+
+      </div>
+    </div>
+{% endfor %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+  {% block navbar%}
+
+    <nav class="navbar navbar-expand-lg navbar-light" style="background: #d0d0d0;">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">Map</a>
+    
+        <div class="d-flex"">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            
+            <li class="nav-item">
+              <a class="nav-link" href="#">Dustbins</a>
+            </li>
+
+            <li class="nav-item">
+              <h6>{{ user["username"] }}</h5>
+            </li>
+
+            <li class="nav-item">
+              <a href="/logout" class="nav-link">logout</a>
+            </li>
+
+        </ul>
+        </div>
+    
+      </div>
+    </nav>
+  
+    {% endblock %}
+
+    {% block content%}
+    <div id="user_main_map"></div>
+    
+    <script>
+      var headers = {
+            Authorization: "Bearer {{ token }}"
+          }
+      async function initMap() {
+        var element = document.querySelector("#user_main_map")
+        element.width = window.innerWidth
+        element.style.height = (4*(window.innerHeight/5) + "px")
+        await google.maps.importLibrary("maps");
+
+        var officeResp = await axios.get("/api/users/office", {headers: headers})
+        office = officeResp.data
+        dbins_resp = await axios.get(`/api/offices/${office.id}/dbins`,{ headers: headers})
+        dbins = dbins_resp.data
+        
+        var map = new google.maps.Map(element, {
+        zoom: 11,
+        mapId: `addOfficeMap2`
+        })
+
+        var officeMap = new OfficeMap(map, office, dbins)
+        console.log(officeMap)
+    
+    }
+
+    initMap();
+
+  </script>
+
+{% endblock %}

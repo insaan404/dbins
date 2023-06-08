@@ -1,0 +1,105 @@
+<form class="row g-3" hx-post="/administration/drivers/add" hx-trigger="submit">
+    <div class="modal fade p-5 " id="staticBackdropAddDriver" data-bs-backdrop="static" data-bs-keyboard="false"
+    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+       
+    <div class="modal-dialog modal-lg" style="text-align: left;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Driver</h5>
+                    <button type="button" class="btn-close close_add_driver" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-7">
+
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <label for="fname">First Name</label>
+                                    <input type="text" class="form-control" placeholder="First name" name="fname">
+                                </div>
+                                <div class="col">
+                                    <label for="lname">Last Name</label>
+                                    <input type="text" class="form-control" placeholder="Last name" name="lname">
+                                </div>
+                            </div>
+                        
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <label for="contact">Contact</label>
+                                    <input type="phone" class="form-control" placeholder="Contact Number" name="contact">
+                                </div>
+                            </div>
+                        
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <label for="address">Address</label>
+                                    <textarea name="address" id="" class="form-control" rows="1"></textarea>
+                                </div>
+                            </div>
+                        
+                            <div class="row mt-4">
+                                <div class="col">
+                                    <label for="office">Office</label><br>
+                                    <select name="office" id="" 
+                                    style="width: 100px; height: 27px; border-radius: 5px;">
+                                        {% for office in offices%}
+                                            <option value="{{ office['id'] }}"> {{office["area_name"]}} </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                        
+                                <div class="col">
+                                    <label for="vehicle">Vehicle</label><br>
+                                    <select name="vehicle" id=""
+                                    style="width: 100px; height: 27px; border-radius: 5px;">
+                                        {% for veh in vehicles %}
+                                            <option value="{{ veh['id'] }}"> {{veh["plate_no"]}} </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                        
+                            </div>
+                        
+                        </div>
+                        <div class="col-1"></div>
+                        <div class="col-4 p-3">
+                            <div class="mb-2">
+                                <label for="username">Email:</label>
+                                <input type="text" class="form-control" placeholder="Email" name="username">
+                            </div>
+                            <div>
+                                <label for="password">Password:</label>
+                                <input type="password" class="form-control" placeholder="passoword" name="password">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row mt-5" style="text-align: right;">
+                        <div class="col" style="text-align: right;">
+                            <button type="button" class="btn btn-secondary close_add_driver"
+                            data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+       </div> 
+
+    </div>
+
+</form>
+
+<script>
+    elem = document.querySelector("#staticBackdropAddDriver")
+    var addDriverModel = new bootstrap.Modal(elem)
+    addDriverModel.show();
+</script>
+
+
+
+

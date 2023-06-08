@@ -1,0 +1,76 @@
+{% extends "root/root_administration_base.html" %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-10"></div>
+            <div class="col-2 my-1" style="text-align: right;">
+                <span style="color: #d4d4d4">Office: </span>
+                 <select name="office" id=""
+                  style="width: 100px; height: 26px; border-radius: 3px;">
+                    <option value=""> All </option>
+                    {% for off in offices %}
+                        <option value="{{ off['id'] }}">{{ off['area_name'] }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div id="root_main_map" 
+    style="border: 1px solid gray; margin: 10px; height: 100%;"
+    ></div>
+
+<script>
+
+    async function initMap() {
+        headers = {
+            Authorization: "Bearer " + "{{ api_token }}"
+        }
+        var element = document.querySelector("#root_main_map")
+        element.width = window.innerWidth
+        element.style.height = (3*(window.innerHeight/4) + "px")
+        var office_map = []
+        console.log("root home")
+        var map = new google.maps.Map(element, {
+        center: {lat: 34.025917, lng: 71.560135},
+        zoom: 8,
+        mapId: `addOfficeMap2`
+        })
+
+        wdas_resp = await axios.get("/api/wdas", {headers:headers})
+        putWdas(map, wdas_resp.data)
+
+        office_resp = await axios.get("/api/offices", {
+            headers: headers
+        })
+
+        offices = office_resp.data
+        for (i=0; i<offices.length; i++){
+            dbins_resp = await axios.get(`/api/offices/${offices[i].id}/dbins`,{ headers: headers})
+            dbins = dbins_resp.data
+            off_map = new OfficeMap(map, offices[i], dbins)
+            office_map.push(
+                off_map
+            )
+        }
+
+        google.maps.event.addListener(map, 'zoom_changed', (e) => {
+            if (map.zoom >= 11){
+                office_map.forEach(mp => {
+                    mp.removeIdentifierMarker()
+                })
+            }else{
+               office_map.forEach(mp => {
+                mp.showIdentifierMarker()
+               })
+            }
+        })
+
+    }
+
+initMap();
+
+</script>
+{% endblock %}

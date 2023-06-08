@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block navbar %}
+<div class="container-fluid>
+    <div class="row" style="color: white">
+        <nav class="navbar navbar-expand-sm navbar-light" style="background: #0268ba">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/" style="color: #d4d4d4">Home</a>
+            
+                <div class="d-flex"">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        
+                        <li class="nav-item">
+                        <a class="nav-link" href="#" style="color: #d4d4d4">Profile</a>
+                        </li>
+    
+                        <li class="nav-item">
+                            <a class="nav-link" href="/administration" style="color: #d4d4d4">Administration</a>
+                        </li> 
+    
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout" style="color: #d4d4d4">logout</a>
+                        </li> 
+                    </ul>
+                </div>
+    
+            </div>
+        </nav>
+    </div>
+</div>
+{% endblock %}

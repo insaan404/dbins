@@ -1,0 +1,92 @@
+{% extends "root/root_administration_base.html" %}
+
+{% block title %} Administration {% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row mt-5">
+            <div class="col-3" style="text-align: center;">
+                <div class="list-group">
+                    <a class="list-group-item" href="/administration/offices">
+                        Office
+                    </a>
+                    <a class="list-group-item active" href="/administration/drivers">
+                        Drivers
+                    </a>
+                    <a class="list-group-item" href="/administration/vehicles">
+                        Vehicle
+                    </a>
+                    <a class="list-group-item" href="/administration/dbins">
+                        DustBins
+                    </a>
+                    <a class="list-group-item" href="/administration/wdas">
+                        Wast Disposal Area
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-9" style="text-align: center;">
+                <div class="row">
+                    <div class="col-6" style="text-align: left;">
+                        <div>
+                        <div style="margin-right: 10px; margin-top: 15px;">
+                            <span 
+                            style="font-size: 15px; font-weight: bold;"
+                            >
+                            Office:
+                        </span>
+                            <select name="office" id=""
+                            style="width: 100px; height: 26px; border-radius: 3px;"
+                            hx-trigger="change" hx-get="/administration/drivers/" hx-target="#root_drivers_area"
+                            hx-swap="innerHTML">
+                                <option value=""> All </option>
+                                {% for off in offices %}
+                                    <option value="{{ off['id'] }}"> {{ off['area_name'] }} </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-outline-secondary btn-sm"
+                        style="float: right; margin-bottom: 10px;"
+                        type="button"
+                        hx-trigger="click" hx-get="/administration/drivers/add" 
+                        hx-target="#add_driver_form"
+                        hx-swap="innerHTML"
+                        >   
+                        <img src="{{ url_for('static', filename='images/add.png')}}" alt="add"
+                        class="" width="30" height="30" id="add_office">
+                            
+                        </button>
+                        <div id="add_driver_form"></div>
+                    </div>
+                </div>
+
+                <div id="root_drivers_area" 
+                style="border-top: 2px solid #f0f0f0; height: 70vh; overflow: auto;"
+                hx-trigger="load" hx-get="/administration/drivers/all" hx-swap="innerHTML"
+                hx-target="this">
+
+                    <img class="htmx-indicator" src="{{ url_for('static', filename='images/spinner.gif') }}"
+                    style="margin-top: 20px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        area = document.querySelector("#add_driver_form")
+        area.addEventListener("click", e => {
+            source = e.target
+            if (source.classList.contains("close_add_driver")){
+            area.innerHTML = ""
+            }
+        })
+    </script>
+
+
+{% endblock %}
+

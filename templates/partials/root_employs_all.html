@@ -1,0 +1,15 @@
+ {% for emp in employs %}
+    <div class="card mt-1 shadow-sm rounded">
+      <div class="card-body">
+        <h5 class="card-header">{{ emp["fname"] }} {{ emp["lname"] }}</h5>
+        <div class="mt-1 mx-2" style="text-align: left;">
+          <strong>First Name: </strong> {{ emp["fname"] }} <br>
+          <strong>Last Name: </strong> {{ emp["lname"] }} <br>
+          <strong>Contact: </strong> {{ emp["contact"] }} <br>
+          <strong>Address: </strong> {{ emp["address"] }}
+          <!-- <strong>Contact: </strong> {{ emp["contact"] }} <br> -->
+
+        </div>
+      </div>
+    </div>
+  {% endfor %}

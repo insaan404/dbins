@@ -1,0 +1,56 @@
+<form class="row g-3" hx-post="/administration/vehicles/add" hx-trigger="submit">
+    <div class="modal fade p-5 " id="staticBackdropAddVehicle" data-bs-backdrop="static" data-bs-keyboard="false"
+    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+       
+        <div class="modal-dialog" style="text-align: left;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Vehicle</h5>
+                        <button type="button" class="btn-close close_add_vehicle" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row mt-2">
+                            <div class="col">
+                                <label for="fname">Plate Number</label>
+                                <input type="text" class="form-control" placeholder="Plate No" name="plate_no">
+                            </div>
+
+                        </div>
+                
+                        <div class="row mt-4">
+                            <div class="col">
+                                <label for="office">Office</label><br>
+                                <select name="office" id="" 
+                                style="width: 100px; height: 27px; border-radius: 5px;">
+                                    <option value="">None</option>
+                                    {% for office in offices%}
+                                        <option value="{{ office['id'] }}"> {{office["area_name"]}} </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mt-5" style="text-align: right;">
+                            <div class="col" style="text-align: right;">
+                                <button type="button" class="btn btn-secondary close_add_vehicle"
+                                data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+
+                    </div> 
+
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<script>
+    elem = document.querySelector("#staticBackdropAddVehicle")
+    var addDriverModel = new bootstrap.Modal(elem)
+    addDriverModel.show();
+</script>
+

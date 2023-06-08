@@ -1,0 +1,47 @@
+{% extends "root_administration_base.html" %}
+
+{% block contents %}
+<div class="mx-5">
+  
+  <div class="" style="height: 40px;">
+    <img src="{{ url_for('static', filename='images/add.png')}}" alt="add" srcset=""
+    class="" width="30" height="30" style="margin-top: 5px; float: right; margin-right: 5px;"
+     id="add_office"
+    hx-trigger="click" hx-get="/administration/offices/add" hx-target="#add_office_form"
+    hx-swap="innerHTML">
+    
+    <div id=add_office_form></div>
+  </div>
+
+  </div>
+
+  {% for off in offices %}
+    <div class="card mt-1 shadow-sm rounded">
+      <div class="card-body">
+        <h5 class="card-header">{{ off["area_name"] }}</h5>
+        <div class="mt-1 mx-2" style="text-align: left;">
+          <strong>Drivers: </strong> 3 <br>
+          <strong>Employs: </strong> 23 <br>
+          <strong>Vehicles: </strong> 5 
+
+        </div>
+
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<script>
+  area = document.querySelector("#add_office_form")
+  area.addEventListener("click", e => {
+    source = e.target
+    if (source.classList.contains("close_add_office")){
+      area.innerHTML = ""
+    }
+  })
+
+  area.addEventListener("saved", e => {
+    // area.innerHTML = ""
+  })
+</script>
+{% endblock %}

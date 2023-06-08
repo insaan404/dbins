@@ -1,0 +1,78 @@
+{% extends "root/root_administration_base.html" %}
+{% block title %} Administration {% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row mt-5">
+            <div class="col-3" style="text-align: center;">
+                <div class="list-group">
+                    <a class="list-group-item active" href="/administration/offices">
+                        Office
+                    </a>
+                    <a class="list-group-item " href="/administration/drivers">
+                        Drivers
+                    </a>
+                    <a class="list-group-item" href="/administration/vehicles">
+                        Vehicle
+                    </a>
+                    <a class="list-group-item" href="/administration/dbins">
+                        DustBins
+                    </a>
+                    <a class="list-group-item" href="/administration/wdas">
+                        Wast Disposal Area
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-9" style="text-align: center;">
+                <div>
+                     <div class="" style="height: 50px;">
+                        <button class="btn btn-outline-secondary btn-sm"
+                        style="float: right;"
+                        type="button"
+                        hx-trigger="click" hx-get="/administration/offices/add" hx-target="#add_office_form"
+                        hx-swap="innerHTML"
+                        >   
+                            <img src="{{ url_for('static', filename='images/add.png')}}" alt="add"
+                            class="" width="30" height="30" id="add_office"
+                            >
+                            
+                        </button>
+                        <div id="add_office_form"></div>
+                    </div>
+                </div>
+
+                <div id="main" 
+                style="border-top: 2px solid #f0f0f0; height: 70vh; overflow: auto;"
+                hx-trigger="load" hx-get="/administration/offices/all" hx-swap="innerHTML"
+                hx-target="this">
+
+                    <img class="htmx-indicator" src="{{ url_for('static', filename='images/spinner.gif') }}"
+                    style="margin-top: 20px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+  area = document.querySelector("#add_office_form")
+  area.addEventListener("click", e => {
+    source = e.target
+    if (source.classList.contains("close_add_office")){
+      area.innerHTML = ""
+    }
+  })
+
+  area.addEventListener("saved", e => {
+    // area.innerHTML = ""
+  })
+</script>
+
+{% endblock %}
+
+
+
+
+
+

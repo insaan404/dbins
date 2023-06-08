@@ -1,0 +1,92 @@
+<form class="row g-3" hx-post="/administration/wdas/add" hx-trigger="submit">
+    <div class="modal fade p-5 " id="staticBackdropAddWda" data-bs-backdrop="static" data-bs-keyboard="false"
+    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+       
+        <div class="modal-dialog modal-lg" style="text-align: left;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Vehicle</h5>
+                        <button type="button" class="btn-close close_add_wda" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row mt-2">
+                            
+                            <div class="col-5">
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="name">Name:</label>
+                                        <input type="text" class="form-control" placeholder="Name" name="name">
+                                    </div>
+                                    <div class="col">
+                                        <label for="area">Area:</label>
+                                        <input type="text" class="form-control" placeholder="Area" name="area">
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <label for="location">Location:</label>
+                                        <input type="text" class="form-control" placeholder="Location"
+                                        name="location" readonly>
+                                    </div>
+                                </div>
+    
+                            </div>
+    
+
+                            <div class="col-7">
+                                <div id="add_wda_map" style="width: 100%; height: 300px;"></div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row mt-5" style="text-align: right;">
+                            <div class="col" style="text-align: right;">
+                                <button type="button" class="btn btn-secondary close_add_wda"
+                                data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+
+                    </div> 
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<script>
+    elem = document.querySelector("#staticBackdropAddWda")
+    var addDriverModel = new bootstrap.Modal(elem)
+    addDriverModel.show();
+    var marker = null
+    var thisDiv = elem
+    var location_field = thisDiv.querySelector("input[name='location']")
+    async function init(){
+        var target = thisDiv.querySelector("#add_wda_map")
+
+        var map = new google.maps.Map(target, {
+            center: {lat: 34.0151, lng: 71.5249},
+            zoom: 9,
+        })
+
+        map.addListener("click", e => {
+            if (marker){
+                marker.setMap(null)
+                marker = null
+            }
+
+            latLng = e.latLng
+            crd = {lat: latLng.lat().toFixed(5), lng: latLng.lng().toFixed(5)}
+            marker = putMarker(map, crd, "/media/static/images?image=wda.png", [30, 30])
+            location_field.value = JSON.stringify(crd)
+        })
+    }
+
+    init()
+
+</script>
+
+

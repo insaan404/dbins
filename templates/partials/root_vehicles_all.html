@@ -1,0 +1,15 @@
+{% for vh in vehicles %}
+     <div class="card mt-2 shadow-sm rounded">
+        <button
+        style="position: absolute; right: 5px; top: 5px; border: none; background-color: white;">
+            <img src="{{url_for('static', filename='images/edit.svg')}}" alt="">
+        </button>
+        <div class="card-body" style="text-align: left;">
+        <h5 class="card-header" style="text-align: center;"> Vehicle </h5>
+        <div>
+            <span>Palate Number: </span>
+            <span>{{ vh["plate_no"] }}</span>
+        </div>
+        </div>
+    </div>
+{% endfor %}

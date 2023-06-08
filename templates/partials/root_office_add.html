@@ -1,0 +1,254 @@
+<form action="" id="add_office_form" hx-post="/administration/offices/add" hx-trigger="submit">
+<div class="modal fade show" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    
+    <div class="modal-dialog modal-fullscreen">
+      
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="btn-close close_add_office" data-bs-dismiss="modal" aria-label="Close">
+          </button>
+        </div>
+      
+        <div class="modal-body" id="add_office_area">
+
+        <div class="container-fluid" id="add_office_main">
+            
+            <div class="row">
+                <div class="col-5" style="text-align: left;">
+                        <div class="mb-3">
+                            <label for="area_name" class="form-label">Area Name</label>
+                            <input type="text" class="form-control" id="area_name" placeholder="area name"
+                            name="area_name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="wda">Waste Disposal Area</label>
+                            <select name="wda" id="wda" class="form-select">
+                                {% for w in wdas %}
+                                    <option value="{{w['id']}}">{{ w["name"] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="add_office_coordinates" class="form-label">Coordinates</label>
+                            <textarea class="form-control" id="add_office_coordinates" rows="5" readonly
+                            name="coordinates">
+                            </textarea>
+                            <label for="isCoordinatesSelected">Selected?</label>
+                            <input type="checkbox" id="isCoordinatesSelected" id="isCoordinatesSelected">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="add_office_coordinates" class="form-label">Vehicle Terminal</label>
+                            <input type="text" class="form-control" id="add_office_vh_terminal" rows="5"
+                            readonly
+                            name="vehicle_terminal">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-7">
+                    <div class="container-fluid my-2" style="vertical-align: middle;">
+                        <div class="row">
+                            <div class="col-9">
+                                <h5>Select at least 3 points for office area</h5>
+                            </div>
+                            <div class="col-3 text-end justify-content-center">
+                                <button type="button" id="clear_office_coords"
+                                class="btn btn-danger">
+                                Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="add_office_map_area" style="width: 100%; height: 400px;"></div>
+                </div>
+            </div>
+        </div>
+
+
+        </div>
+      
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close_add_office" 
+          data-bs-dismiss="modal">Close</button>
+
+          <button type="submit" class="btn btn-primary">
+          Save
+        </button>
+        </div>
+      </div>
+    </div>
+
+
+
+<script>
+
+headers = {
+Authorization: "Bearer " + "{{ api_token }}"
+}
+
+var myModal = new bootstrap.Modal(document.getElementById("staticBackdrop"))
+myModal.show();
+
+var element = document.querySelector("#add_office_map_area")
+var map = new google.maps.Map(element, {
+center: {lat: 34.025917, lng: 71.560135},
+zoom: 8,
+mapId: `addOfficeMap2`
+})
+
+axios.get("/api/wdas", {headers:headers})
+.then(resp => {
+    putWdas(map, resp.data)
+})
+
+
+main = document.querySelector("#add_office_main")
+clear_btn = main.querySelector("#clear_office_coords")
+coordinates = []
+markers = []
+boundry = null
+form = document.querySelector("#add_office_form")
+coordinates_field = form.querySelector("textarea")
+terminal_location_field = form.querySelector("#add_office_vh_terminal")
+
+var isCoordinatesSelected = false
+
+crdSelectedElement = form.querySelector("#isCoordinatesSelected")
+crdSelectedElement.addEventListener("click", e=> {
+    isCoordinatesSelected = e.target.checked
+    console.log(isCoordinatesSelected)
+})
+
+
+
+
+function clear(){
+    _remove_markers()
+    coordinates.splice(0)
+    update_ui()
+}
+
+
+function clear_boundry(){
+    if (boundry !== null){
+        boundry.setMap(null)
+        boundry = null
+    }
+}
+
+function draw_boundry() {
+    clear_boundry()
+    boundry = new google.maps.Polygon({
+        fillColor: "#00f0f0",
+        fillOpacity: 0.2,
+        map: map,
+        paths: coordinates,
+        strokeColor: "#ff0000",
+        strokeOpacity: 1.0,
+    })
+}
+
+function _getlatlng(e) {
+    lat = e.latLng.lat().toFixed(5)
+    lng = e.latLng.lng().toFixed(5)
+    crd = new google.maps.LatLng(lat, lng)
+    return {lat: crd.lat(), lng: crd.lng()}
+}
+
+function _is_selected (crd) {
+    rslt = coordinates.findIndex(obj => obj.lat==crd.lat && obj.lng == crd.lng)
+    if (rslt == -1){return false}
+    else {return true}
+}
+
+function _remove_coord(crd) {
+    ind = coordinates.findIndex(obj => obj.lat==crd.lat && obj.lng == crd.lng)
+    coordinates.splice(ind, 1)
+    markers.splice(ind, 1)
+}
+
+function _remove_markers(){
+    for (i=0; i<markers.length; i++){
+        markers[i].setMap(null)
+    }
+    markers.splice(0)
+}
+
+function put_red_dot(crd) {
+    var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(crd.lat, crd.lng),
+        map: map,
+        icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 6,
+            fillColor: "#fd0000",
+            fillOpacity: 1,
+            strokeWeight: 0
+        }
+    })
+
+    markers.push(marker)
+}
+
+
+function update_ui(){
+    _remove_markers()
+    coordinates_field.value = ""
+    for (i=0; i<coordinates.length; i++){
+        coordinates_field.value += JSON.stringify(coordinates[i]) + "\n"
+        put_red_dot(coordinates[i])
+    }
+
+    draw_boundry()
+}
+
+
+function createBoundry(e){
+    crd = _getlatlng(e)
+
+    if (_is_selected(crd)){
+        _remove_coord(crd)
+        dumpToTextArea()
+
+    }else{
+        if ("lat" in crd && "lng" in crd){
+            coordinates.push(crd)
+        } 
+        put_red_dot(crd)
+        update_ui()
+
+        boundry.addListener("click", e=> {
+            putVehicleTerminal(e)
+        })
+
+    }
+}
+
+var terminal = null;
+
+ function putVehicleTerminal(e){
+    if (terminal){
+        terminal.setMap(null)
+        terminal_location_field.value = ""
+        terminal = null
+    }
+    crd = {lat: e.latLng.lat(), lng: e.latLng.lng()}
+    terminal = putMarker(map, crd, "/media/static/images?image=terminal.png", [30, 30])
+    terminal_location_field.value = JSON.stringify(crd)
+ }
+
+function put_selection_marker(e) {
+    if (!isCoordinatesSelected)
+        createBoundry(e)
+}
+
+map.addListener("click", put_selection_marker)
+clear_btn.addEventListener("click", e => {
+    clear()
+})
+
+
+
+</script>
+

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title%} login page {% endblock %}
+{% block head %}
+  {{ super() }}
+  <style>
+    body {
+      background-color: #d3d3d3;
+    }
+    html,
+    body {
+      height: 100%;
+    }
+    .center-box {
+      width: 400px;
+      height: 300px;
+      background-color: #fdfdfd;
+    }
+  </style>
+
+{% endblock %}
+
+
+{% block content %}
+  <div class="container">
+    <div
+      class="row justify-content-center align-items-center"
+      style="height: 100vh">
+      <div class="col-md-6 rounded shadow-lg center-box">
+        <form action="/" method="post">
+          {% with messages=get_flashed_messages() %}
+            {% if messages %}
+              {% for message in messages %}
+                <div class="text-danger"
+                style="text-align: center; font-size: 15; font-weight: bold; padding: 10px;"
+                >{{ message }}</div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+          <div class="my-3">
+            <label for="login-email" class="form-label">Email</label>
+            <input
+              type="text"
+              class="form-control"
+              id="login-email"
+              placeholder="enter email"
+              name="username" />
+          </div>
+          <div class="mb-3">
+            <label for="login-password" class="form-label">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              id="login-password"
+              placeholder="enter password"
+              name="password" />
+          </div>
+          <div class="row px-2 mt-3">
+            <button type="submit" class="btn btn-primary">Login</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
