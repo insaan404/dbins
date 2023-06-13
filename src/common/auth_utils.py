@@ -8,7 +8,6 @@ import src.use_cases.administration as uc_admin
 
 
 def create_token(user):
-    print("here: id: ", user.id.hex)
     token = jwt.encode({"user": user.id.hex}, os.getenv("key"), algorithm="HS256")
     return token
 

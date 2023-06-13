@@ -28,7 +28,7 @@ api.register_blueprint(users_bp, url_prefix="/users")
 
 @api.post("/login")
 def _login():
-    
+    print("api login")
     cred = request.json
     user = uc_admin.get_user_by_username(cred["username"])
     device = cred.get("device")

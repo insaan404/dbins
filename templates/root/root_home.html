@@ -23,16 +23,17 @@
     ></div>
 
 <script>
-
+    console.log("here root home")
     async function initMap() {
         headers = {
             Authorization: "Bearer " + "{{ api_token }}"
         }
+        await google.maps.importLibrary("maps");
+        await google.maps.importLibrary("marker");
         var element = document.querySelector("#root_main_map")
         element.width = window.innerWidth
         element.style.height = (3*(window.innerHeight/4) + "px")
         var office_map = []
-        console.log("root home")
         var map = new google.maps.Map(element, {
         center: {lat: 34.025917, lng: 71.560135},
         zoom: 8,

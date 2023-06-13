@@ -7,6 +7,7 @@ from flask import send_from_directory, Response, Flask, request, session, redire
 from flask_cors import CORS
 
 import requests as reqs
+import requests
 from dotenv import load_dotenv
 
 
@@ -56,10 +57,12 @@ def _login():
         flash("wrong credentials")
         return redirect(f"/")
     session["token"] = create_token(user)
-    resp = reqs.post(f"{URL}/api/login",
-                data=json.dumps({"username": user.username, "password": user.password, "device": "webapp"}),
-                headers={"Content-Type": "Application/json"})
-    token = resp.json()["token"]
+
+    # resp = reqs.post(f"{URL}/api/login",
+                # data=json.dumps({"username": user.username, "password": user.password, "device": "webapp"}),
+                # headers={"Content-Type": "Application/json"})
+
+    token = session.get("token")
     cache = UserCache(token)
     user_cache_repo.add_cache(user.id, cache)
     return redirect("/")
@@ -78,6 +81,7 @@ def _user_home(user):
 def _root_home(user):
     offices = uc_office.get_all_offices(user)
     cache = user_cache_repo.get_cache(user.id)
+    print("office: ", offices)
     if not cache:
         session["token"] = ''
         return redirect("/")
